@@ -1,7 +1,10 @@
-install(FILES "${PROJECT_SOURCE_DIR}/packaging/QtDesignTemplate.desktop"
+configure_file("${PROJECT_SOURCE_DIR}/packaging/application.desktop.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME}.desktop" @ONLY)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME}.desktop"
     DESTINATION "${CMAKE_INSTALL_DATADIR}/applications")
-install(FILES "${PROJECT_SOURCE_DIR}/packaging/QtDesignTemplate.png"
-    DESTINATION "${CMAKE_INSTALL_DATADIR}/icons/hicolor/256x256/apps")
+install(FILES "${APP_ICON}"
+    DESTINATION "${CMAKE_INSTALL_DATADIR}/icons/hicolor/256x256/apps"
+    RENAME "${APP_NAME}.png")
 
 get_target_property(appimage_qmake Qt6::qmake IMPORTED_LOCATION)
 

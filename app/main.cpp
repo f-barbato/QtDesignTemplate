@@ -5,12 +5,14 @@
 #include <QVariant>
 
 #include "MainViewModel.h"
+#include "application.h"
 
 int main(int argc, char *argv[])
 {
     qputenv("QT_QUICK_CONTROLS_CONF", ":/qtquickcontrols2.conf");
     QGuiApplication app(argc, argv);
-    QCoreApplication::setApplicationName("QtDesignTemplate");
+    QCoreApplication::setApplicationName(APP_DISPLAY_NAME);
+    QCoreApplication::setApplicationVersion(APP_VERSION_STRING);
 
     MainViewModel viewModel;
     QQmlApplicationEngine engine;

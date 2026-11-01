@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug QtDesignTemplate",
+            "name": "Debug QtDesignTemplate (Linux)",
             "type": "cppdbg",
             "request": "launch",
             "program": "${command:cmake.launchTargetPath}",
@@ -10,6 +10,22 @@
             "preLaunchTask": "Build QtDesignTemplate",
             "MIMode": "gdb",
             "stopAtEntry": false
+        },
+        {
+            "name": "Debug QtDesignTemplate (macOS)",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${command:cmake.launchTargetPath}",
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "Build QtDesignTemplate"
+        },
+        {
+            "name": "Debug QtDesignTemplate (Windows MSVC)",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${command:cmake.launchTargetPath}",
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "Build QtDesignTemplate"
         }
     ]
 }

@@ -7,7 +7,7 @@ Window {
     visible: true
     width: Constants.width
     height: Constants.height
-    title: "QtDesignTemplate"
+    title: Qt.application.name
 
     // Design Studio uses the mock; main.cpp injects the C++ ViewModel.
     property var viewModel: QtObject {

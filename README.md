@@ -33,6 +33,39 @@ a C++ plugin in the designer runtime.
 - CMake 3.21+, Ninja, and a C++17 compiler.
 - GDB for debugging in VS Code on Linux.
 
+## Reusing the template
+
+Copy `CMakeUserPresets.json.example` to `CMakeUserPresets.json` and set
+`QT_ROOT` there to your Qt kit directory. This ignored local file is the
+single kit configuration used by both VS Code tasks and local presets:
+
+```sh
+cmake --preset debug-local
+cmake --build --preset debug-local
+ctest --preset debug-local
+```
+
+Customize the defaults in `cmake/application.cmake`, or override its cache
+variables in your configure preset: `APP_NAME`, `APP_EXECUTABLE_NAME`,
+`APP_IDENTIFIER`, `APP_VENDOR`, `APP_DESCRIPTION`, `APP_LICENSE`, and
+`APP_ICON`. Set `APP_VERSION_MAJOR`, `APP_VERSION_MINOR`, and
+`APP_VERSION_PATCH` (the fix component) in the same file or preset.
+`APP_VERSION` is assembled as `major.minor.patch` and used for the CMake
+project, runtime application version, bundles, and installation packages.
+
+```sh
+cmake --preset release-local \
+  -DAPP_VERSION_MAJOR=1 -DAPP_VERSION_MINOR=2 -DAPP_VERSION_PATCH=3
+```
+
+These settings control the executable filename, runtime window title,
+bundle identity, desktop entry, and package metadata.
+
+The internal CMake target `QtDesignTemplateApp` and QML URIs `app.ui`,
+`app.ui.pages`, and `app.ui.components` are intentionally stable and do
+not need to match the product name. The example screen text and the
+Design Studio project filename can be customized separately.
+
 ## Build and run from the terminal
 
 Set `QT_ROOT` to the Qt kit directory, not the top-level installation
@@ -106,32 +139,39 @@ cmake --build --preset package-linux
 
 All outputs are written to `build/release/packages/`. AppImage creation
 uses `build/release/AppDir` as its staging directory.
-Customize the package maintainer, license metadata, desktop file, and
+The staging directory is recreated before every AppImage build to avoid
+shipping obsolete files. Customize the application metadata and
 icon before distributing your application. Build on the oldest Linux
 distribution you intend to support and test on each target distribution.
 
 ## Visual Studio Code
 
 Install the recommended **CMake Tools** and **C/C++** extensions.
-The included build and debug configurations target Linux.
+Use GDB on Linux, LLDB on macOS, or the Windows MSVC debug configuration.
+Install the **CodeLLDB** extension (`vadimcn.vscode-lldb`) for the macOS
+configuration.
+On Windows, launch VS Code from an MSVC developer environment and use
+the corresponding Qt MSVC kit; Ninja must be on `PATH`.
 
-1. Update `CMAKE_PREFIX_PATH` in `.vscode/tasks.json` and `QT_ROOT` in
-   `cmake.configureEnvironment` in `.vscode/settings.json` for your Qt kit.
-   The current path is
-   `$HOME/Qt/6.12.0/gcc_64`.
-2. CMake Tools supplies `QT_ROOT` from these workspace settings to the
-   configure presets. Terminal commands still require `export QT_ROOT=...`
-   or an explicit `-DCMAKE_PREFIX_PATH=...`.
-3. Select `debug` using **CMake: Select Configure Preset**, run
+1. Create `CMakeUserPresets.json` as described above.
+2. Select `debug-local` using **CMake: Select Configure Preset**, run
    **CMake: Configure**, and select `QtDesignTemplateApp` as the
    Launch/Debug Target.
-4. Press **F5** with the `Debug QtDesignTemplate` configuration.
+3. Press **F5** with the debug configuration for your platform.
 
 F5 first runs the `Build QtDesignTemplate` task, which depends on
-`Configure QtDesignTemplate`: it configures with an explicit
-`CMAKE_PREFIX_PATH`, builds the app, and starts GDB. **Ctrl+Shift+B**
+`Configure QtDesignTemplate`: it configures using the local Qt kit,
+builds the app, and starts the debugger. **Ctrl+Shift+B**
 runs the same build without starting the debugger. The tasks use the
-`debug` preset.
+`debug-local` preset.
+
+## Continuous integration
+
+`.github/workflows/build.yml` builds and tests on Linux, Windows, and
+macOS using Qt 6.8.3, runs QML linting, and uploads native packages.
+The Linux job generates DEB, RPM, and AppImage; Windows generates NSIS,
+and macOS generates DMG. Remote jobs must pass before considering those
+platforms verified; adding a workflow is not a substitute for running it.
 
 ## Qt Design Studio
 
@@ -162,6 +202,5 @@ cmake --preset debug -DLINK_INSIGHT=ON
 cmake --build --preset debug
 ```
 
-The VS Code configure task reapplies the `debug` preset, which sets
-`LINK_INSIGHT=OFF`. To use Insight with F5 as well, add
-`-DLINK_INSIGHT=ON` to the arguments of the `Configure QtDesignTemplate` task.
+To use Insight with F5 as well, set `LINK_INSIGHT` to `ON` in the
+`cacheVariables` of your `debug-local` configure preset.

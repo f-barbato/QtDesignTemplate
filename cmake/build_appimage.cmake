@@ -3,6 +3,11 @@ find_program(LINUXDEPLOY_QT_PLUGIN NAMES linuxdeploy-plugin-qt linuxdeploy-plugi
 
 set(appdir "${BUILD_DIRECTORY}/AppDir")
 set(output_directory "${BUILD_DIRECTORY}/packages")
+if(NOT IS_ABSOLUTE "${BUILD_DIRECTORY}"
+   OR NOT EXISTS "${BUILD_DIRECTORY}/CMakeCache.txt")
+    message(FATAL_ERROR "BUILD_DIRECTORY must be an absolute configured CMake build directory.")
+endif()
+file(REMOVE_RECURSE "${appdir}")
 file(MAKE_DIRECTORY "${output_directory}")
 
 execute_process(

@@ -1,0 +1,34 @@
+{
+    "version": 3,
+    "configurePresets": [
+        {
+            "name": "local",
+            "hidden": true,
+            "environment": {
+                "QT_ROOT": "/absolute/path/to/Qt/kit"
+            }
+        },
+        {
+            "name": "debug-local",
+            "inherits": ["debug", "local"]
+        },
+        {
+            "name": "release-local",
+            "inherits": ["release", "local"]
+        }
+    ],
+    "buildPresets": [
+        {"name": "debug-local", "configurePreset": "debug-local"},
+        {"name": "release-local", "configurePreset": "release-local"},
+        {"name": "package-local", "configurePreset": "release-local", "targets": ["package"]},
+        {
+            "name": "package-linux-local",
+            "configurePreset": "release-local",
+            "targets": ["package", "appimage"],
+            "condition": {"type": "equals", "lhs": "${hostSystemName}", "rhs": "Linux"}
+        }
+    ],
+    "testPresets": [
+        {"name": "debug-local", "configurePreset": "debug-local", "output": {"outputOnFailure": true}}
+    ]
+}

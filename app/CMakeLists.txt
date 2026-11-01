@@ -9,10 +9,14 @@ qt_add_executable(QtDesignTemplateApp main.cpp)
 set_target_properties(QtDesignTemplateApp PROPERTIES
     WIN32_EXECUTABLE TRUE
     MACOSX_BUNDLE TRUE
-    MACOSX_BUNDLE_BUNDLE_NAME "QtDesignTemplate"
+    OUTPUT_NAME "${APP_EXECUTABLE_NAME}"
+    MACOSX_BUNDLE_GUI_IDENTIFIER "${APP_IDENTIFIER}"
+    MACOSX_BUNDLE_BUNDLE_NAME "${APP_NAME}"
     MACOSX_BUNDLE_BUNDLE_VERSION "${PROJECT_VERSION}"
     MACOSX_BUNDLE_SHORT_VERSION_STRING "${PROJECT_VERSION}"
 )
+configure_file(application.h.in "${CMAKE_CURRENT_BINARY_DIR}/application.h" @ONLY)
+target_include_directories(QtDesignTemplateApp PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
 target_link_libraries(QtDesignTemplateApp PRIVATE
     app_viewmodels
     Qt6::Quick

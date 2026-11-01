@@ -1,0 +1,69 @@
+name: Build and package
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, windows-2022, macos-14]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ilammy/msvc-dev-cmd@v1
+        if: runner.os == 'Windows'
+      - name: Install Linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build rpm libgl1-mesa-dev libxkbcommon-dev libxcb-cursor0 libegl1
+          mkdir -p "$RUNNER_TEMP/appimage-tools"
+          curl -fL https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage -o "$RUNNER_TEMP/appimage-tools/linuxdeploy-x86_64.AppImage"
+          curl -fL https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage -o "$RUNNER_TEMP/appimage-tools/linuxdeploy-plugin-qt-x86_64.AppImage"
+          chmod +x "$RUNNER_TEMP/appimage-tools/"*.AppImage
+          echo "$RUNNER_TEMP/appimage-tools" >> "$GITHUB_PATH"
+      - name: Install Windows packaging tools
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          choco install nsis ninja --yes --no-progress
+          "C:\Program Files (x86)\NSIS" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+      - uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.8.3'
+          cache: true
+      - name: Configure and test
+        shell: bash
+        run: |
+          export QT_ROOT="$QT_ROOT_DIR"
+          cmake --preset debug
+          cmake --build --preset debug --parallel 2
+          ctest --preset debug
+          cmake --build build/debug --target all_qmllint
+      - name: Package
+        shell: bash
+        run: |
+          export QT_ROOT="$QT_ROOT_DIR"
+          cmake --preset release
+          if [ "$RUNNER_OS" = "Linux" ]; then
+            cmake --build --preset package-linux --parallel 2
+          else
+            cmake --build --preset package --parallel 2
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: packages-${{ runner.os }}
+          path: |
+            build/release/packages/*.deb
+            build/release/packages/*.rpm
+            build/release/packages/*.AppImage
+            build/release/packages/*.exe
+            build/release/packages/*.dmg
+          if-no-files-found: error

@@ -6,8 +6,7 @@
             "type": "process",
             "command": "cmake",
             "args": [
-                "--preset", "debug",
-                "-DCMAKE_PREFIX_PATH=${userHome}/Qt/6.12.0/gcc_64"
+                "--preset", "debug-local"
             ],
             "options": {"cwd": "${workspaceFolder}"},
             "problemMatcher": ["$gcc"]
@@ -17,7 +16,7 @@
             "type": "process",
             "command": "cmake",
             "args": [
-                "--build", "--preset", "debug",
+                "--build", "--preset", "debug-local",
                 "--target", "QtDesignTemplateApp"
             ],
             "options": {"cwd": "${workspaceFolder}"},

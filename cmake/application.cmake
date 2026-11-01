@@ -1,0 +1,22 @@
+set(APP_NAME "QtDesignTemplate" CACHE STRING "Application display name and package name")
+set(APP_EXECUTABLE_NAME "QtDesignTemplateApp" CACHE STRING "Executable filename")
+set(APP_IDENTIFIER "org.example.QtDesignTemplate" CACHE STRING "Application bundle identifier")
+set(APP_VENDOR "QtDesignTemplate maintainers" CACHE STRING "Application vendor and package maintainer")
+set(APP_DESCRIPTION "Qt Quick MVVM application" CACHE STRING "Package description")
+set(APP_LICENSE "Apache-2.0" CACHE STRING "Package license identifier")
+set(APP_ICON "${CMAKE_CURRENT_LIST_DIR}/../packaging/QtDesignTemplate.png" CACHE FILEPATH "Application PNG icon")
+
+if(NOT APP_NAME MATCHES "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+   OR NOT APP_EXECUTABLE_NAME MATCHES "^[A-Za-z0-9][A-Za-z0-9._-]*$")
+    message(FATAL_ERROR "APP_NAME and APP_EXECUTABLE_NAME must contain only letters, digits, dots, underscores, and hyphens.")
+endif()
+set(APP_VERSION_MAJOR "1" CACHE STRING "Application major version")
+set(APP_VERSION_MINOR "0" CACHE STRING "Application minor version")
+set(APP_VERSION_PATCH "0" CACHE STRING "Application patch (fix) version")
+
+foreach(component MAJOR MINOR PATCH)
+    if(NOT APP_VERSION_${component} MATCHES "^(0|[1-9][0-9]*)$")
+        message(FATAL_ERROR "APP_VERSION_${component} must be a non-negative integer without leading zeros.")
+    endif()
+endforeach()
+set(APP_VERSION "${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}.${APP_VERSION_PATCH}")
