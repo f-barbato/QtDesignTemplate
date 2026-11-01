@@ -1,0 +1,53 @@
+{
+    "version": 3,
+    "configurePresets": [
+        {
+            "name": "debug",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/debug",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_PREFIX_PATH": "$env{QT_ROOT}",
+                "BUILD_TESTING": "ON",
+                "LINK_INSIGHT": "OFF"
+            }
+        },
+        {
+            "name": "release",
+            "inherits": "debug",
+            "binaryDir": "${sourceDir}/build/release",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "BUILD_TESTING": "OFF"
+            }
+        }
+    ],
+    "buildPresets": [
+        {"name": "debug", "configurePreset": "debug"},
+        {"name": "release", "configurePreset": "release"},
+        {
+            "name": "package",
+            "configurePreset": "release",
+            "targets": ["package"]
+        },
+        {
+            "name": "package-appimage",
+            "configurePreset": "release",
+            "targets": ["appimage"],
+            "condition": {"type": "equals", "lhs": "${hostSystemName}", "rhs": "Linux"}
+        },
+        {
+            "name": "package-linux",
+            "configurePreset": "release",
+            "targets": ["package", "appimage"],
+            "condition": {"type": "equals", "lhs": "${hostSystemName}", "rhs": "Linux"}
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "debug",
+            "configurePreset": "debug",
+            "output": {"outputOnFailure": true}
+        }
+    ]
+}

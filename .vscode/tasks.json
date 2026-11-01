@@ -1,0 +1,29 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Configure QtDesignTemplate",
+            "type": "process",
+            "command": "cmake",
+            "args": [
+                "--preset", "debug",
+                "-DCMAKE_PREFIX_PATH=~/Qt/6.12.0/gcc_64"
+            ],
+            "options": {"cwd": "${workspaceFolder}"},
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "Build QtDesignTemplate",
+            "type": "process",
+            "command": "cmake",
+            "args": [
+                "--build", "--preset", "debug",
+                "--target", "QtDesignTemplateApp"
+            ],
+            "options": {"cwd": "${workspaceFolder}"},
+            "dependsOn": "Configure QtDesignTemplate",
+            "group": {"kind": "build", "isDefault": true},
+            "problemMatcher": ["$gcc"]
+        }
+    ]
+}

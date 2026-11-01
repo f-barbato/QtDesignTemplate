@@ -1,0 +1,57 @@
+import QmlProject
+
+Project {
+    mainFile: "app/ui/App.qml"
+    mainUiFile: "app/ui/pages/Home.ui.qml"
+
+    QmlFiles {
+        directory: "app/ui"
+    }
+
+    JavaScriptFiles {
+        directory: "app/ui"
+    }
+
+    ImageFiles {
+        directory: "app/ui/assets/images"
+    }
+
+    Files {
+        filter: "*.conf"
+        files: ["qtquickcontrols2.conf"]
+    }
+
+    Files {
+        filter: "qmldir"
+        directory: "app/ui"
+    }
+
+    FontFiles {
+        filter: "*.ttf;*.otf"
+        directory: "app/ui/assets/fonts"
+    }
+
+    Environment {
+        QT_QUICK_CONTROLS_CONF: "qtquickcontrols2.conf"
+    }
+
+    qt6Project: true
+
+    importPaths: [ "." ]
+
+    targetDirectory: "./output/QtDesignTemplate"
+
+    enableCMakeGeneration: false
+    standaloneApp: true
+
+    qdsVersion: "4.8"
+
+    quickVersion: "6.8"
+
+    widgetApp: false
+
+    multilanguageSupport: true
+    supportedLanguages: ["en"]
+    primaryLanguage: "en"
+
+}
