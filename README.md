@@ -115,12 +115,13 @@ distribution you intend to support and test on each target distribution.
 Install the recommended **CMake Tools** and **C/C++** extensions.
 The included build and debug configurations target Linux.
 
-1. Update `CMAKE_PREFIX_PATH` for your Qt kit in `.vscode/tasks.json` and
-   `.vscode/settings.json`. The current path is
+1. Update `CMAKE_PREFIX_PATH` in `.vscode/tasks.json` and `QT_ROOT` in
+   `cmake.configureEnvironment` in `.vscode/settings.json` for your Qt kit.
+   The current path is
    `$HOME/Qt/6.12.0/gcc_64`.
-2. When using presets through CMake Tools, launch VS Code with `QT_ROOT`
-   set, or specify the path in a local `CMakeUserPresets.json`,
-   which is ignored by Git.
+2. CMake Tools supplies `QT_ROOT` from these workspace settings to the
+   configure presets. Terminal commands still require `export QT_ROOT=...`
+   or an explicit `-DCMAKE_PREFIX_PATH=...`.
 3. Select `debug` using **CMake: Select Configure Preset**, run
    **CMake: Configure**, and select `QtDesignTemplateApp` as the
    Launch/Debug Target.

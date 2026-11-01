@@ -1,8 +1,7 @@
 {
     "cmake.useCMakePresets": "always",
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
-    "cmake.configureSettings": {
-        "CMAKE_PREFIX_PATH": "~/Qt/6.12.0/gcc_64",
-        "LINK_INSIGHT": false
+    "cmake.configureEnvironment": {
+        "QT_ROOT": "${userHome}/Qt/6.12.0/gcc_64"
     }
 }
